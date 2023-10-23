@@ -26,6 +26,9 @@ type StarRocksComponentSpec struct {
 	// default: nil
 	RunAsNonRoot *bool `json:"runAsNonRoot,omitempty"`
 
+	UserID *int64 `json:"userID,omitempty"`
+
+	GroupID *int64 `json:"groupID,omitempty"`
 	// the reference for configMap which allow users to mount any files to container.
 	// +optional
 	ConfigMaps []ConfigMapReference `json:"configMaps,omitempty"`
@@ -115,6 +118,14 @@ func (spec *StarRocksComponentSpec) GetRunAsNonRoot() (*int64, *int64) {
 
 	var userID int64 = 1000
 	var groupID int64 = 1000
+
+	if spec.UserID != nil && *spec.UserID > 0 {
+		userID = *spec.UserID
+	}
+	if spec.GroupID != nil && *spec.GroupID > 0 {
+		groupID = *spec.GroupID
+	}
+
 	return &userID, &groupID
 }
 

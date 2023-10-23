@@ -529,6 +529,12 @@ spec:
                     type: object
                   runAsNonRoot:
                     type: boolean
+                  runAsUser:
+                    format: int64
+                    type: integer
+                  runAsGroup:
+                    format: int64
+                    type: integer
                   schedulerName:
                     type: string
                   secrets:
@@ -1432,6 +1438,12 @@ spec:
                     type: object
                   runAsNonRoot:
                     type: boolean
+                  runAsUser:
+                    format: int64
+                    type: integer
+                  runAsGroup:
+                    format: int64
+                    type: integer
                   schedulerName:
                     type: string
                   secrets:
@@ -2486,6 +2498,12 @@ spec:
                     type: object
                   runAsNonRoot:
                     type: boolean
+                  runAsUser:
+                    format: int64
+                    type: integer
+                  runAsGroup:
+                    format: int64
+                    type: integer
                   schedulerName:
                     type: string
                   secrets:
