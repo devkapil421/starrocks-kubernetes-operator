@@ -14,10 +14,12 @@ operator:
       # if set true, the clusterrole, clusterrolebinding, role, rolebinding, serviceaccount resources will be created for
       # operator. If changed to false later, these resources will be deleted.
       create: true
-      # If the default service account created by helm chart is not satisfied, e.g. can not download
-      # image from private registry, you can set the serviceAccountName to use the specified service
-      # account. You should create the service account in the same namespace with operator in advance.
-      serviceAccountName: ""
+      serviceAccount:
+        name: "starrocks"
+        # Optional annotations to add to serviceaccount manifest
+        annotations: {}
+        # Optional labels to add to serviceaccount manifest
+        labels: {}
   
   # TimeZone is used to set the environment variable TZ for pod, with Asia/Shanghai as the default.
   timeZone: Asia/Shanghai
@@ -37,8 +39,8 @@ operator:
     image:
       # image sliced by "repository:tag"
       repository: starrocks/operator
-      tag: v1.8.4
-    imagePullPolicy: imagePullPolicy
+      tag: v1.8.5
+    imagePullPolicy: Always
     replicaCount: 1
     resources:
       limits:
@@ -81,6 +83,9 @@ starrocks:
   # After deployment is completed, it won't take effect to modify the password here and to do a `helm upgrade`.
   # It also supports providing secret name that contains password, using the password in the secret instead of the plaintext in the values.yaml.
   # When both password and passwordSecret are set, only passwordSecret takes effect.
+  # Note: If you install StarRocks using helm install without setting the initPassword, then for subsequent upgrade deployments,
+  #       you should also not set the initPassword.
+  #       If you install StarRocks using helm install and set the initPassword, please always retain the configuration of initPassword.
   initPassword:
     enabled: false
     password: ""
@@ -113,7 +118,7 @@ starrocks:
   
   # deploy a starrocks cluster
   starrocksCluster:
-    # the name of starrockscluster cluster, if not set, the chart name will be used.
+    # the name of starrockscluster cluster, if not set, the value of nameOverride fields will be used.
     name: ""
     # the namespace of starrockscluster cluster, if not set, the release namespace will be used.
     namespace: ""
