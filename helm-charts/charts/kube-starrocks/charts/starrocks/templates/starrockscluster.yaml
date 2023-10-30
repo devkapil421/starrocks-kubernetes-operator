@@ -64,6 +64,10 @@ spec:
     serviceAccount: {{ .Values.starrocksFESpec.serviceAccount }}
 {{- end }}
     runAsNonRoot: {{ .Values.starrocksFESpec.runAsNonRoot }}
+    groupID: {{ .Values.starrocksFESpec.groupID }}
+    userID: {{ .Values.starrocksFESpec.userId }}
+    allowPrivilegeEscalation: {{ .Values.starrocksFESpec.AllowPrivilegeEscalation }}
+    readOnlyRootFilesystem: {{ .Values.starrocksFESpec.ReadOnlyRootFilesystem }}
 {{- if .Values.starrocksFESpec.nodeSelector }}
     nodeSelector:
 {{ toYaml .Values.starrocksFESpec.nodeSelector | indent 6 }}
@@ -144,6 +148,39 @@ spec:
       storageSize: {{ .Values.starrocksFESpec.storageSpec.logStorageSize }}
 {{- end }}      
       mountPath: {{ template "starrockscluster.fe.log.path" . }}
+    - name: {{ .Values.starrocksFESpec.storageSpec.name }}-pid
+{{- if .Values.starrocksFESpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksFESpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksFESpec.storageSpec.configmapstorageSize }}
+      storageSize: {{ .Values.starrocksFESpec.storageSpec.configmapstorageSize }}
+{{- end }}      
+      mountPath: /opt/starrocks/fe/pid
+    - name: {{ .Values.starrocksFESpec.storageSpec.name }}
+{{- if .Values.starrocksFESpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksFESpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksFESpec.storageSpec.configmapstorageSize }}
+      storageSize: {{ .Values.starrocksFESpec.storageSpec.configmapstorageSize }}
+{{- end }}      
+      mountPath: /opt/starrocks/fe/conf 
+    - name: {{ .Values.starrocksFESpec.storageSpec.name }}
+{{- if .Values.starrocksFESpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksFESpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksFESpec.storageSpec.pidstoragesize }}
+      storageSize: {{ .Values.starrocksFESpec.storageSpec.pidstoragesize }}
+{{- end }}      
+      mountPath: /opt/starrocks/fe/plugins
+    - name: {{ .Values.starrocksFESpec.storageSpec.name }}
+{{- if .Values.starrocksFESpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksFESpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksFESpec.storageSpec.temp_dir }}
+      storageSize: {{ .Values.starrocksFESpec.storageSpec.temp_dir }}
+{{- end }}      
+      mountPath: /opt/starrocks/fe/temp_dir
+
 {{- end }}
 {{- end }}
 
@@ -201,6 +238,10 @@ spec:
     serviceAccount: {{ .Values.starrocksBeSpec.serviceAccount }}
 {{- end }}
     runAsNonRoot: {{ .Values.starrocksBeSpec.runAsNonRoot }}
+    groupID: {{ .Values.starrocksBeSpec.groupID }}
+    userID: {{ .Values.starrocksBeSpec.userId }}
+    allowPrivilegeEscalation: {{ .Values.starrocksBeSpec.AllowPrivilegeEscalation }}
+    readOnlyRootFilesystem: {{ .Values.starrocksBeSpec.ReadOnlyRootFilesystem }}
 {{- if .Values.starrocksBeSpec.podLabels }}
     podLabels:
 {{toYaml .Values.starrocksBeSpec.podLabels | indent 6 }}
@@ -281,6 +322,16 @@ spec:
       storageSize: {{ .Values.starrocksBeSpec.storageSpec.logStorageSize }}
 {{- end }}
       mountPath: {{template "starrockscluster.be.log.path" . }}
+    - name: {{ .Values.starrocksBeSpec.storageSpec.name }}
+{{- if .Values.starrocksBeSpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksBeSpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksBeSpec.storageSpec.configmapstorageSize }}
+      storageSize: {{ .Values.starrocksBeSpec.storageSpec.configmapstorageSize }}
+{{- end }}      
+      mountPath: /opt/starrocks/be/conf
+
+
 {{- end }}
 {{- end }}
 {{- end }}
@@ -295,6 +346,8 @@ spec:
     serviceAccount: {{ .Values.starrocksCnSpec.serviceAccount }}
 {{- end }}
     runAsNonRoot: {{ .Values.starrocksCnSpec.runAsNonRoot }}
+    AllowPrivilegeEscalation: {{ .Values.starrocksCnSpec.AllowPrivilegeEscalation }}
+    ReadOnlyRootFilesystem: {{ .Values.starrocksCnSpec.ReadOnlyRootFilesystem }}
 {{- if .Values.starrocksCnSpec.podLabels }}
     podLabels:
 {{toYaml .Values.starrocksCnSpec.podLabels | indent 6 }}
@@ -425,6 +478,8 @@ spec:
     {{- end }}
     replicas: {{ .Values.starrocksFeProxySpec.replicas }}
     resolver: {{ .Values.starrocksFeProxySpec.resolver }}
+    allowPrivilegeEscalation: {{ .Values.starrocksFeProxySpec.AllowPrivilegeEscalation }}
+    readOnlyRootFilesystem: {{ .Values.starrocksFeProxySpec.ReadOnlyRootFilesystem }}
     {{- if .Values.starrocksFeProxySpec.resources }}
       {{- toYaml .Values.starrocksFeProxySpec.resources | nindent 4 }}
     {{- end }}

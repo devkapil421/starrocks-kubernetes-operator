@@ -52,17 +52,26 @@ starrocksCluster:
 
 # spec to deploy fe.
 starrocksFESpec:
+
+
+
   # number of replicas to deploy for a fe statefulset.
   replicas: 1
   image:
     # image sliced by "repository:tag"
-    repository: starrocks/fe-ubuntu
-    tag: 3.1-latest
+    repository: fe-ubuntu
+    tag: 1.1.2
+    #tag: 3.0-latest
+
   # add annotations for fe pods. For example, if you want to config monitor for datadog, you can config the annotations.
   annotations: {}
   # If runAsNonRoot is true, the container is run as non-root user.
   # The userId will be set to 1000, and the groupID will be set to 1000.
-  runAsNonRoot: false
+  runAsNonRoot: true
+  userId: 1001
+  groupID: 1001
+  AllowPrivilegeEscalation: false
+  ReadOnlyRootFilesystem: true
   # specify the service name and port config and serviceType
   # the service type refer https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   service:
@@ -104,7 +113,9 @@ starrocksFESpec:
   # You specify this manually like you would a raw deployment manifest.
   # This means you can bind in environment variables from secrets.
   # Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
-  feEnvVars: []
+  feEnvVars:
+    - name: "LOG_CONSOLE"
+      value: "1"
     # e.g. static environment variable:
     # - name: DEMO_GREETING
     #   value: "Hello from the environment"
@@ -134,22 +145,25 @@ starrocksFESpec:
   # resources for fe pod.
   resources:
     requests:
-      cpu: 4
-      memory: 4Gi
+      cpu: 1
+      memory: 2Gi
     limits:
-      cpu: 8
-      memory: 8Gi
+      cpu: 2
+      memory: 3Gi
   # fe storageSpec for persistent meta data.
   storageSpec:
-    name: ""
+    name: "starfedata"
     # the storageClassName represent the used storageclass name. if not set will use k8s cluster default storageclass.
-    # you must set name when you set storageClassName
-    storageClassName: ""
+    storageClassName: "standard"
     # the persistent volume size， default 10Gi.
     # fe container stop running if the disk free space which the fe meta directory residents, is less than 5Gi.
     storageSize: 10Gi
     # Setting this parameter can persist log storage
-    logStorageSize: 5Gi
+    logStorageSize: 1Gi
+    configmapstorageSize: 500Mi
+    pidstoragesize: 20Mi
+    temp_dir: 1Gi
+
   # the config for start fe. the base information as follows.
   config: |
     LOG_DIR = ${STARROCKS_HOME}/log
@@ -202,7 +216,11 @@ starrocksCnSpec:
   annotations: {}
   # If runAsNonRoot is true, the container is run as non-root user.
   # The userId will be set to 1000, and the groupID will be set to 1000.
-  runAsNonRoot: false
+  runAsNonRoot: true
+  userId: 1001
+  groupID: 1001
+  AllowPrivilegeEscalation: false
+  ReadOnlyRootFilesystem: true
   # specify the service name and port config and serviceType
   # the service type refer https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   service:
@@ -300,11 +318,11 @@ starrocksCnSpec:
   # define resources requests and limits for cn pods.
   resources:
     limits:
-      cpu: 8
-      memory: 8Gi
+      cpu: 1
+      memory: 2Gi
     requests:
-      cpu: 4
-      memory: 8Gi
+      cpu: 2
+      memory: 3Gi
   # specify storageclass name and request size.
   storageSpec:
     # the name of volume for mount. if not will use emptyDir.
@@ -316,6 +334,7 @@ starrocksCnSpec:
     storageSize: 1Ti
     # the storage size of persistent volume for log.
     logStorageSize: 1Gi
+    configmapstorageSize: 30Mi
   # the config start for cn, the base information as follows.
   config: |
     sys_log_level = INFO
@@ -347,15 +366,19 @@ starrocksBeSpec:
   replicas: 1
   image:
     # image sliced by "repository:tag"
-    repository: starrocks/be-ubuntu
-    tag: 3.1-latest
+    repository: be-ubuntu
+    tag: 1.0.0
   # serviceAccount for be access cloud service.
   serviceAccount: ""
   # add annotations for be pods. example, if you want to config monitor for datadog, you can config the annotations.
   annotations: {}
   # If runAsNonRoot is true, the container is run as non-root user.
   # The userId will be set to 1000, and the groupID will be set to 1000.
-  runAsNonRoot: false
+  runAsNonRoot: true
+  userId: 1001
+  groupID: 1001
+  AllowPrivilegeEscalation: false
+  ReadOnlyRootFilesystem: false
   # specify the service name and port config and serviceType
   # the service type refer https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   service:
@@ -396,7 +419,9 @@ starrocksBeSpec:
   # You specify this manually like you would a raw deployment manifest.
   # This means you can bind in environment variables from secrets.
   # Ref: https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
-  beEnvVars: []
+  beEnvVars:
+    - name: "LOG_CONSOLE"
+      value: "1"
     # e.g. static environment variable:
     # - name: DEMO_GREETING
     #   value: "Hello from the environment"
@@ -426,21 +451,22 @@ starrocksBeSpec:
   # resources for be pod.
   resources:
     requests:
-      cpu: 4
-      memory: 4Gi
+      cpu: 1
+      memory: 2Gi
     limits:
-      cpu: 8
-      memory: 8Gi
+      cpu: 2
+      memory: 3Gi
   # specify storageclass name and request size.
   storageSpec:
     # the name of volume for mount. if not will use emptyDir.
-    name: ""
+    name: "starbedata"
     # the storageClassName represent the used storageclass name. if not set will use k8s cluster default storageclass.
     # you must set name when you set storageClassName
-    storageClassName: ""
-    storageSize: 1Ti
+    storageClassName: "standard"
+    storageSize: 10Gi
     # Setting this parameter can persist log storage
     logStorageSize: 1Gi
+    configmapstorageSize: 30Mi
   # the config for start be. the base information as follows.
   config: |
     be_port = 9060
@@ -502,6 +528,8 @@ starrocksFeProxySpec:
       memory: 2Gi
   # set the resolver for nginx server, default kube-dns.kube-system.svc.cluster.local
   resolver: ""
+  AllowPrivilegeEscalation: false
+  ReadOnlyRootFilesystem: false
   service:
     # the fe proxy service type, only supported ClusterIP, NodePort, LoadBalancer
     # default ClusterIP

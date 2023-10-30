@@ -29,6 +29,9 @@ type StarRocksComponentSpec struct {
 	UserID *int64 `json:"userID,omitempty"`
 
 	GroupID *int64 `json:"groupID,omitempty"`
+
+	AllowPrivilegeEscalation *bool `json:"allowPrivilegeEscalation"`
+	ReadOnlyRootFilesystem   *bool `json:"readOnlyRootFilesystem"`
 	// the reference for configMap which allow users to mount any files to container.
 	// +optional
 	ConfigMaps []ConfigMapReference `json:"configMaps,omitempty"`
@@ -127,6 +130,16 @@ func (spec *StarRocksComponentSpec) GetRunAsNonRoot() (*int64, *int64) {
 	}
 
 	return &userID, &groupID
+}
+
+func (spec *StarRocksComponentSpec) GetAllowPrivilegeEscalation() *bool {
+	allowPrivilegeEscalation := spec.AllowPrivilegeEscalation
+	return allowPrivilegeEscalation
+}
+
+func (spec *StarRocksComponentSpec) GetReadOnlyRootFilesystem() *bool {
+	readOnlyRootFilesystem := spec.ReadOnlyRootFilesystem
+	return readOnlyRootFilesystem
 }
 
 func (spec *StarRocksComponentSpec) GetTerminationGracePeriodSeconds() *int64 {

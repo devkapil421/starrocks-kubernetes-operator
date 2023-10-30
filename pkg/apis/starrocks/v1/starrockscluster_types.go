@@ -69,6 +69,8 @@ type SpecInterface interface {
 	GetHostAliases() []corev1.HostAlias
 	GetRunAsNonRoot() (*int64, *int64)
 	GetTerminationGracePeriodSeconds() *int64
+	GetAllowPrivilegeEscalation() *bool
+	GetReadOnlyRootFilesystem() *bool
 }
 
 var _ SpecInterface = &StarRocksFeSpec{}
@@ -180,6 +182,14 @@ func (spec *StarRocksFeProxySpec) GetHostAliases() []corev1.HostAlias {
 func (spec *StarRocksFeProxySpec) GetRunAsNonRoot() (*int64, *int64) {
 	// fe proxy will set run as nginx user by default, and can not be changed by crd
 	return nil, nil
+}
+
+func (spec *StarRocksFeProxySpec) GetAllowPrivilegeEscalation() *bool {
+	return nil
+}
+
+func (spec *StarRocksFeProxySpec) GetReadOnlyRootFilesystem() *bool {
+	return nil
 }
 
 // GetTerminationGracePeriodSeconds

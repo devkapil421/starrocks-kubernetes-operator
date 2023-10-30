@@ -432,17 +432,30 @@ func PodSecurityContext(spec v1.SpecInterface) *corev1.PodSecurityContext {
 func ContainerSecurityContext(spec v1.SpecInterface) *corev1.SecurityContext {
 	userID, groupID := spec.GetRunAsNonRoot()
 
-	var runAsNonRoot *bool
+	var runAsNonRoot, allowPrivilegeEscalation, readOnlyRootFilesystem *bool
 	if userID != nil && *userID != 0 {
 		b := true
 		runAsNonRoot = &b
+	}
+	if spec.GetAllowPrivilegeEscalation() != nil {
+		allowPrivilegeEscalation = spec.GetAllowPrivilegeEscalation()
+	} else {
+		b := false
+		allowPrivilegeEscalation = &b
+	}
+
+	if spec.GetReadOnlyRootFilesystem() != nil {
+		readOnlyRootFilesystem = spec.GetReadOnlyRootFilesystem()
+	} else {
+		b := false
+		readOnlyRootFilesystem = &b
 	}
 	return &corev1.SecurityContext{
 		RunAsUser:                userID,
 		RunAsGroup:               groupID,
 		RunAsNonRoot:             runAsNonRoot,
-		AllowPrivilegeEscalation: func() *bool { b := false; return &b }(),
+		AllowPrivilegeEscalation: allowPrivilegeEscalation,
 		// starrocks will create pid file, eg.g /opt/starrocks/fe/bin/fe.pid, so set it to false
-		ReadOnlyRootFilesystem: func() *bool { b := false; return &b }(),
+		ReadOnlyRootFilesystem: readOnlyRootFilesystem,
 	}
 }

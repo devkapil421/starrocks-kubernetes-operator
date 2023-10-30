@@ -397,6 +397,8 @@ spec:
                             type: array
                         type: object
                     type: object
+                  allowPrivilegeEscalation:
+                    type: boolean
                   annotations:
                     additionalProperties:
                       type: string
@@ -479,6 +481,9 @@ spec:
                           type: string
                       type: object
                     type: array
+                  groupID:
+                    format: int64
+                    type: integer
                   hostAliases:
                     items:
                       properties:
@@ -515,6 +520,8 @@ spec:
                     additionalProperties:
                       type: string
                     type: object
+                  readOnlyRootFilesystem:
+                    type: boolean
                   replicas:
                     format: int32
                     minimum: 0
@@ -529,12 +536,6 @@ spec:
                     type: object
                   runAsNonRoot:
                     type: boolean
-                  runAsUser:
-                    format: int64
-                    type: integer
-                  runAsGroup:
-                    format: int64
-                    type: integer
                   schedulerName:
                     type: string
                   secrets:
@@ -621,6 +622,12 @@ spec:
                           type: string
                       type: object
                     type: array
+                  userID:
+                    format: int64
+                    type: integer
+                required:
+                - allowPrivilegeEscalation
+                - readOnlyRootFilesystem
                 type: object
               starRocksCnSpec:
                 properties:
@@ -978,6 +985,8 @@ spec:
                             type: array
                         type: object
                     type: object
+                  allowPrivilegeEscalation:
+                    type: boolean
                   annotations:
                     additionalProperties:
                       type: string
@@ -1388,6 +1397,9 @@ spec:
                           type: string
                       type: object
                     type: array
+                  groupID:
+                    format: int64
+                    type: integer
                   hostAliases:
                     items:
                       properties:
@@ -1424,6 +1436,8 @@ spec:
                     additionalProperties:
                       type: string
                     type: object
+                  readOnlyRootFilesystem:
+                    type: boolean
                   replicas:
                     format: int32
                     minimum: 0
@@ -1438,12 +1452,6 @@ spec:
                     type: object
                   runAsNonRoot:
                     type: boolean
-                  runAsUser:
-                    format: int64
-                    type: integer
-                  runAsGroup:
-                    format: int64
-                    type: integer
                   schedulerName:
                     type: string
                   secrets:
@@ -1530,6 +1538,12 @@ spec:
                           type: string
                       type: object
                     type: array
+                  userID:
+                    format: int64
+                    type: integer
+                required:
+                - allowPrivilegeEscalation
+                - readOnlyRootFilesystem
                 type: object
               starRocksFeProxySpec:
                 properties:
@@ -2366,6 +2380,8 @@ spec:
                             type: array
                         type: object
                     type: object
+                  allowPrivilegeEscalation:
+                    type: boolean
                   annotations:
                     additionalProperties:
                       type: string
@@ -2448,6 +2464,9 @@ spec:
                       - name
                       type: object
                     type: array
+                  groupID:
+                    format: int64
+                    type: integer
                   hostAliases:
                     items:
                       properties:
@@ -2484,6 +2503,8 @@ spec:
                     additionalProperties:
                       type: string
                     type: object
+                  readOnlyRootFilesystem:
+                    type: boolean
                   replicas:
                     format: int32
                     minimum: 0
@@ -2498,12 +2519,6 @@ spec:
                     type: object
                   runAsNonRoot:
                     type: boolean
-                  runAsUser:
-                    format: int64
-                    type: integer
-                  runAsGroup:
-                    format: int64
-                    type: integer
                   schedulerName:
                     type: string
                   secrets:
@@ -2590,6 +2605,12 @@ spec:
                           type: string
                       type: object
                     type: array
+                  userID:
+                    format: int64
+                    type: integer
+                required:
+                - allowPrivilegeEscalation
+                - readOnlyRootFilesystem
                 type: object
             type: object
           status:
