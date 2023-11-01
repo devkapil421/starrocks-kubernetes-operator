@@ -168,8 +168,8 @@ spec:
 {{- if .Values.starrocksFESpec.storageSpec.storageClassName }}
       storageClassName: {{ .Values.starrocksFESpec.storageSpec.storageClassName }}
 {{- end }}
-{{- if .Values.starrocksFESpec.storageSpec.pidstoragesize }}
-      storageSize: {{ .Values.starrocksFESpec.storageSpec.pidstoragesize }}
+{{- if .Values.starrocksFESpec.storageSpec.plugins }}
+      storageSize: {{ .Values.starrocksFESpec.storageSpec.plugins }}
 {{- end }}      
       mountPath: /opt/starrocks/fe/plugins
     - name: {{ .Values.starrocksFESpec.storageSpec.name }}
@@ -180,6 +180,14 @@ spec:
       storageSize: {{ .Values.starrocksFESpec.storageSpec.temp_dir }}
 {{- end }}      
       mountPath: /opt/starrocks/fe/temp_dir
+    - name: {{ .Values.starrocksFESpec.storageSpec.name }}-pid
+{{- if .Values.starrocksFESpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksFESpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksFESpec.storageSpec.temp_dir }}
+      storageSize: {{ .Values.starrocksFESpec.storageSpec.temp_dir }}
+{{- end }}      
+      mountPath: /tmp
 
 {{- end }}
 {{- end }}
@@ -330,6 +338,54 @@ spec:
       storageSize: {{ .Values.starrocksBeSpec.storageSpec.configmapstorageSize }}
 {{- end }}      
       mountPath: /opt/starrocks/be/conf
+    - name: {{ .Values.starrocksBeSpec.storageSpec.name }}-pid
+{{- if .Values.starrocksBeSpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksBeSpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksBeSpec.storageSpec.pidstoragesize }}
+      storageSize: {{ .Values.starrocksBeSpec.storageSpec.pidstoragesize }}
+{{- end }}      
+      mountPath: /opt/starrocks/be/pid
+    - name: {{ .Values.starrocksBeSpec.storageSpec.name }}-udfruntime
+{{- if .Values.starrocksBeSpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksBeSpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksBeSpec.storageSpec.udfruntime }}
+      storageSize: {{ .Values.starrocksBeSpec.storageSpec.udfruntime }}
+{{- end }}      
+      mountPath: /opt/starrocks/be/lib/udf-runtime
+    - name: {{ .Values.starrocksBeSpec.storageSpec.name }}-udf
+{{- if .Values.starrocksBeSpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksBeSpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksBeSpec.storageSpec.udfruntime }}
+      storageSize: {{ .Values.starrocksBeSpec.storageSpec.udfruntime }}
+{{- end }}      
+      mountPath: /opt/starrocks/be/lib/udf
+    - name: {{ .Values.starrocksBeSpec.storageSpec.name }}-smallfile
+{{- if .Values.starrocksBeSpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksBeSpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksBeSpec.storageSpec.udfruntime }}
+      storageSize: {{ .Values.starrocksBeSpec.storageSpec.udfruntime }}
+{{- end }}      
+      mountPath: /opt/starrocks/be/lib/small_file
+    - name: {{ .Values.starrocksBeSpec.storageSpec.name }}-jdbcdrivers
+{{- if .Values.starrocksBeSpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksBeSpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksBeSpec.storageSpec.udfruntime }}
+      storageSize: {{ .Values.starrocksBeSpec.storageSpec.udfruntime }}
+{{- end }}      
+      mountPath: /opt/starrocks/be/lib/jdbc_drivers
+    - name: {{ .Values.starrocksBeSpec.storageSpec.name }}-spill
+{{- if .Values.starrocksBeSpec.storageSpec.storageClassName }}
+      storageClassName: {{ .Values.starrocksBeSpec.storageSpec.storageClassName }}
+{{- end }}
+{{- if .Values.starrocksBeSpec.storageSpec.udfruntime }}
+      storageSize: {{ .Values.starrocksBeSpec.storageSpec.udfruntime }}
+{{- end }}      
+      mountPath: /opt/starrocks/be/spill
 
 
 {{- end }}

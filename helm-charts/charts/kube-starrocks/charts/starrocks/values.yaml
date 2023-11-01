@@ -55,15 +55,12 @@ starrocksCluster:
 
 # spec to deploy fe.
 starrocksFESpec:
-
-
-
   # number of replicas to deploy for a fe statefulset.
   replicas: 1
   image:
     # image sliced by "repository:tag"
-    repository: fe-ubuntu
-    tag: 1.1.2
+    repository: abhi07/starrocks-frontend
+    tag: latest
     #tag: 3.0-latest
 
   # add annotations for fe pods. For example, if you want to config monitor for datadog, you can config the annotations.
@@ -79,7 +76,7 @@ starrocksFESpec:
   # the service type refer https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   service:
     # the fe service type, only supported ClusterIP, NodePort, LoadBalancer
-    type: "ClusterIP"
+    type: "LoadBalancer"
     # the loadBalancerIP for static ip config when the type=LoadBalancer and loadbalancerIp is not empty.
     loadbalancerIP: ""
     # add annotations for fe service.
@@ -166,6 +163,7 @@ starrocksFESpec:
     configmapstorageSize: 500Mi
     pidstoragesize: 20Mi
     temp_dir: 1Gi
+    plugins: 1Gi
 
   # the config for start fe. the base information as follows.
   config: |
@@ -369,8 +367,8 @@ starrocksBeSpec:
   replicas: 1
   image:
     # image sliced by "repository:tag"
-    repository: be-ubuntu
-    tag: 1.0.0
+    repository: abhi07/starrocks-backend
+    tag: latest3
   # serviceAccount for be access cloud service.
   serviceAccount: ""
   # add annotations for be pods. example, if you want to config monitor for datadog, you can config the annotations.
@@ -381,7 +379,7 @@ starrocksBeSpec:
   userId: 1001
   groupID: 1001
   AllowPrivilegeEscalation: false
-  ReadOnlyRootFilesystem: false
+  ReadOnlyRootFilesystem: true
   # specify the service name and port config and serviceType
   # the service type refer https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   service:
@@ -470,6 +468,8 @@ starrocksBeSpec:
     # Setting this parameter can persist log storage
     logStorageSize: 1Gi
     configmapstorageSize: 30Mi
+    pidstoragesize: 20Mi
+    udfruntime: 500Mi
   # the config for start be. the base information as follows.
   config: |
     be_port = 9060
